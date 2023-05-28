@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Clean
+docker compose -f docker/docker-compose-kc-events.yaml down --remove-orphans
+#docker system prune -af
+
+# Build custom KC version
+docker compose -f docker/docker-compose-kc-events.yaml build
+
+# Run containers
+docker compose -f docker/docker-compose-kc-events.yaml up -d
+
+# Add connector
+chmod +x sh/addconnector
+sh/addconnector
+
+# Retrieve KC log
+#docker logs -f -n 1000 docker-keycloak-1

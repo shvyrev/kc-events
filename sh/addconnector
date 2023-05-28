@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## Await until KC start
+curl -k --retry 999 --retry-connrefused --retry-all-errors --retry-max-time 0 "https://localhost:8443"
+
+## Add connector
+curl -X "POST" "http://localhost:8083/connectors" \
+     -H 'Content-Type: application/json' \
+     -d $'{
+  "name": "kc_events_connector",
+  "config": {
+    "database.password": "admin",
+    "database.user": "admin",
+    "database.dbname": "keycloak",
+    "slot.name": "kc_events_connector_slot",
+    "database.hostname": "postgres",
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "database.port": "5432",
+    "database.server.name": "kc_events",
+    "table.whitelist": "public.event_entity",
+    "plugin.name": "pgoutput"
+  }
+}'
+
+## Check connector status
+curl "http://localhost:8083/connectors?expand=status&expand=info" -H 'Content-Type: application/json'

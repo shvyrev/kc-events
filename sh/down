@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-compose -f docker/docker-compose-kc-events.yaml down --remove-orphans
